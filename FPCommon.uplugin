@@ -1,0 +1,23 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "FPCommon",
+	"Description": "Collection of useful classes",
+	"Category": "Other",
+	"CreatedBy": "fpwong",
+	"CreatedByURL": "",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": true,
+	"IsBetaVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "FPCommon",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	]
+}
