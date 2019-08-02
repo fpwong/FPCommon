@@ -15,7 +15,7 @@ void AFPCHitbox::OnHitboxOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 	if (ActorsHit.Contains(OtherActor))
 		return;
 
-	HitboxHelper->OnHitboxOverlap.Broadcast(OtherActor, this, SweepResult);
+	HitboxHelper->OnHitboxOverlap.Broadcast(OtherActor, this, HitboxHelper, SweepResult);
 	ActorsHit.Add(OtherActor);
 }
 
@@ -31,7 +31,13 @@ void AFPCHitbox::SetHitboxActive(bool bNewActive)
 
 	if (bNewActive) // activate hitbox
 	{
-		//PrimitiveComponent->bHiddenInGame = false;
+		TArray<AActor*> OverlappingActors;
+		PrimitiveComponent->GetOverlappingActors(OverlappingActors);
+		for (AActor* Actor : OverlappingActors)
+		{
+			OnHitboxOverlap(nullptr, Actor, nullptr, -1, false, FHitResult());
+		}
+
 		PrimitiveComponent->OnComponentBeginOverlap.AddDynamic(this, &AFPCHitbox::OnHitboxOverlap);
 	}
 	else // deactivate hitbox

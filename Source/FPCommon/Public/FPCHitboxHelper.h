@@ -8,7 +8,7 @@
 #include "Components/PrimitiveComponent.h"
 #include "FPCHitboxHelper.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FHitboxHelperDelegate, AActor*, Actor, AFPCHitbox*, Hitbox, const FHitResult&, Hit);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FHitboxHelperDelegate, AActor*, Actor, AFPCHitbox*, Hitbox, UFPCHitboxHelper*, HitboxHelper, const FHitResult&, Hit);
 
 UCLASS()
 class FPCOMMON_API AFPCHitbox : public AActor
