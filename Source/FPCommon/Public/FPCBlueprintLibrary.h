@@ -8,10 +8,13 @@
 #include "FPCBlueprintLibrary.generated.h"
 
 UCLASS()
-class FPCOMMON_API UFPCBlueprintLibrary : public UBlueprintFunctionLibrary
+	class FPCOMMON_API UFPCBlueprintLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 
 	UFUNCTION(BlueprintPure, Category = "Affiliation")
 	static FAISenseAffiliationFilter MakeAffiliationFilter(bool bDetectEnemies, bool bDetectNeutrals, bool bDetectFriendlies);
+
+	UFUNCTION(BlueprintPure, Category = "Math")
+	static float GetAngleBetweenVectors(FVector A, FVector B);
 };
