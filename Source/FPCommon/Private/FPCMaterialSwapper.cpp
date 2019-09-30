@@ -50,41 +50,51 @@ void UFPCMaterialSwapper::SaveComponentMaterials(UPrimitiveComponent* Component)
 	}
 }
 
-void UFPCMaterialSwapper::AddLayer(UMaterialInterface* Material)
+int32 UFPCMaterialSwapper::AddLayer(UMaterialInterface* Material)
 {
 	if (Material == nullptr)
 	{
-		return;
+		return -1;
 	}
 
 	Layers.Push(Material);
 	ApplyLayer(Material);
+
+	return Layers.Num() - 1;
 }
 
-void UFPCMaterialSwapper::RemoveLayer(UMaterialInterface* Material)
+void UFPCMaterialSwapper::RemoveLayer(int32 Index)
 {
-	if (Material == nullptr)
+	if (Index < 0 || Layers.Num() == 0)
 	{
 		return;
 	}
 
-	const int32 LayerIndex = Layers.IndexOfByKey(Material);
-	if (LayerIndex != -1 && LayerIndex == Layers.Num() - 1)
+	if (!Layers.IsValidIndex(Index))
+	{
+		UE_LOG(LogTemp, Error, TEXT("Index is not valid!"));
+		return;
+	}
+
+	Layers[Index] = nullptr;
+
+	bool bChangedTopLayer = false;
+	while (Layers.Num() > 0 && Layers.Top() == nullptr)
 	{
 		Layers.Pop();
+		bChangedTopLayer = true;
+	}
 
+	if (bChangedTopLayer)
+	{
 		if (Layers.Num() > 0)
 		{
-			ApplyLayer(Layers.Last());
+			ApplyLayer(Layers.Top());
 		}
 		else
 		{
 			ApplyBaseLayer();
 		}
-	}
-	else
-	{
-		Layers.RemoveAt(LayerIndex);
 	}
 }
 

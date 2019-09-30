@@ -28,10 +28,10 @@ public:
 	void SaveComponentMaterials(UPrimitiveComponent* Component);
 
 	UFUNCTION(BlueprintCallable)
-	void AddLayer(UMaterialInterface* Material);
+	int32 AddLayer(UMaterialInterface* Material);
 
 	UFUNCTION(BlueprintCallable)
-	void RemoveLayer(UMaterialInterface* Material);
+	void RemoveLayer(int32 Index);
 
 protected:
 	// Called when the game starts
