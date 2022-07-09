@@ -8,7 +8,6 @@
 #include "FPCMaterialSwapper.generated.h"
 
 class UMaterialInterface;
-class UPrimiteComponent;
 
 using FComponentMaterials = TMap<UPrimitiveComponent*, TArray<UMaterialInterface*>>;
 

@@ -27,10 +27,10 @@ void UFPCMaterialSwapper::SaveBaseMaterials()
 		return;
 	}
 
-	TArray<UActorComponent*> ComponentsWithMaterials = OwnerActor->GetComponentsByClass(UPrimitiveComponent::StaticClass());
-	for (UActorComponent* ActorComponent : ComponentsWithMaterials)
+	TArray<UPrimitiveComponent*> ComponentsWithMaterials;
+	OwnerActor->GetComponents<UPrimitiveComponent>(ComponentsWithMaterials);
+	for (UPrimitiveComponent* PrimitiveComponent : ComponentsWithMaterials)
 	{
-		UPrimitiveComponent* PrimitiveComponent = Cast<UPrimitiveComponent>(ActorComponent);
 		SaveComponentMaterials(PrimitiveComponent);
 	}
 }
@@ -106,10 +106,11 @@ void UFPCMaterialSwapper::ApplyLayer(UMaterialInterface* Material)
 		return;
 	}
 
-	TArray<UActorComponent*> ComponentsWithMaterials = OwnerActor->GetComponentsByClass(UPrimitiveComponent::StaticClass());
-	for (UActorComponent* ActorComponent : ComponentsWithMaterials)
+	TArray<UPrimitiveComponent*> PrimitiveComponents;
+	OwnerActor->GetComponents<UPrimitiveComponent>(PrimitiveComponents);
+	
+	for (UPrimitiveComponent* PrimitiveComponent : PrimitiveComponents)
 	{
-		UPrimitiveComponent* PrimitiveComponent = Cast<UPrimitiveComponent>(ActorComponent);
 		const int32 NumMaterials = PrimitiveComponent->GetNumMaterials();
 
 		for (int32 i = 0; i < NumMaterials; i++)
@@ -127,11 +128,11 @@ void UFPCMaterialSwapper::ApplyBaseLayer()
 		return;
 	}
 
-	TArray<UActorComponent*> ComponentsWithMaterials = OwnerActor->GetComponentsByClass(UPrimitiveComponent::StaticClass());
-	for (UActorComponent* ActorComponent : ComponentsWithMaterials)
+	TArray<UPrimitiveComponent*> PrimitiveComponents;
+	OwnerActor->GetComponents<UPrimitiveComponent>(PrimitiveComponents);
+	
+	for (UPrimitiveComponent* PrimitiveComponent : PrimitiveComponents)
 	{
-		UPrimitiveComponent* PrimitiveComponent = Cast<UPrimitiveComponent>(ActorComponent);
-
 		if (const auto MaterialsArrayPtr = BaseLayer.Find(PrimitiveComponent))
 		{
 			const int32 NumMaterials = MaterialsArrayPtr->Num();
