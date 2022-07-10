@@ -43,6 +43,6 @@ bool UFPCUWCommonButton::Initialize()
 #if WITH_EDITOR
 const FText UFPCUWCommonButton::GetPaletteCategory()
 {
-	return FText::FromString("FPCommonUI");
+	return FText::FromString("FPCommon");
 }
 #endif
