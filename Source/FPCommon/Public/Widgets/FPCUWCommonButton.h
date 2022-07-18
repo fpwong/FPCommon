@@ -21,7 +21,9 @@ public:
 	UCommonTextBlock* ButtonLabel;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "FPCommonButton", meta = (ExposeOnSpawn = true))
-	FText ButtonText;
+	FText InitialButtonText;
+
+	void SetButtonLabelText(const FText& InText);
 
 #if WITH_EDITOR
 	virtual const FText GetPaletteCategory() override;

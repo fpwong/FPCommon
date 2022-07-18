@@ -25,19 +25,18 @@ bool UFPCUWCommonButton::Initialize()
 
 	if (ButtonLabel)
 	{
-		ButtonLabel->SetText(ButtonText);
-	}
-
-	if (UButton* Button = Cast<UButton>(WidgetTree->RootWidget))
-	{
-		if (UButtonSlot* ButtonSlot = Cast<UButtonSlot>(Button->GetContentSlot()))
-		{
-			ButtonSlot->SetHorizontalAlignment(HAlign_Center);
-			ButtonSlot->SetVerticalAlignment(VAlign_Center);
-		}
+		ButtonLabel->SetText(InitialButtonText);
 	}
 
 	return true;
+}
+
+void UFPCUWCommonButton::SetButtonLabelText(const FText& InText)
+{
+	if (ButtonLabel)
+	{
+		ButtonLabel->SetText(InText);
+	}
 }
 
 #if WITH_EDITOR
