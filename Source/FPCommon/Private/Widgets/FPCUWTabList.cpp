@@ -31,8 +31,7 @@ bool UFPCUWTabList::Initialize()
 		UWidget* Child = Children[i];
 		if (UCommonActivatableWidget* Activatable = Cast<UCommonActivatableWidget>(Child))
 		{
-			FString TabName = FString::Printf(TEXT("Tab_%d"), i);
-			const FName TabId = FName(*TabName);
+			const FName TabId = FName(*FString::Printf(TEXT("Tab_%d"), i));
 
 			if (RegisterTab(TabId, TabButtonWidgetType, Activatable))
 			{
@@ -43,13 +42,8 @@ bool UFPCUWTabList::Initialize()
 				{
 					if (UFPCUWCommonButton* FPButton = Cast<UFPCUWCommonButton>(TabButtonBase))
 					{
-						FText TabNamee = IFPCTabNameInterface::Execute_GetTabName(Activatable);
-						if (FPButton->ButtonLabel)
-						{
-							FPButton->ButtonLabel->SetText(TabNamee);
-						}
-
-						FPButton->ButtonText = TabNamee;
+						FText TabName = IFPCTabNameInterface::Execute_GetTabName(Activatable);
+						FPButton->SetButtonLabelText(TabName);
 					}
 				}
 			}
