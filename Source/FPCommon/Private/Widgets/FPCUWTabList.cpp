@@ -53,7 +53,9 @@ bool UFPCUWTabList::Initialize()
 	return true;
 }
 
+#if WITH_EDITOR
 const FText UFPCUWTabList::GetPaletteCategory()
 {
 	return FText::FromString("FPCommon");
 }
+#endif
