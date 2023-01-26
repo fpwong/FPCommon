@@ -38,4 +38,10 @@ class FPCOMMON_API UFPCBlueprintLibrary : public UBlueprintFunctionLibrary
 
 	UFUNCTION(BlueprintCallable, Category = "GameSession")
 	static bool BanPlayer(AGameSession* GameSession, APlayerController* BannedPlayer, const FText& BanReason);
+
+	UFUNCTION(BlueprintCallable, Category = "Misc")
+	static AActor* GetViewTarget(APlayerCameraManager* PlayerCameraManager);
+
+	UFUNCTION(BlueprintCallable, Category = "Misc")
+	static float GetCurrentTime(UUMGSequencePlayer* SequencePlayer);
 };

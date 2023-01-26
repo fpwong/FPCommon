@@ -2,6 +2,7 @@
 
 #include "FPCBlueprintLibrary.h"
 
+#include "Animation/UMGSequencePlayer.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "Engine/World.h"
@@ -101,4 +102,14 @@ bool UFPCBlueprintLibrary::KickPlayer(AGameSession* GameSession, APlayerControll
 bool UFPCBlueprintLibrary::BanPlayer(AGameSession* GameSession, APlayerController* BannedPlayer, const FText& BanReason)
 {
 	return GameSession ? GameSession->BanPlayer(BannedPlayer, BanReason) : nullptr;
+}
+
+AActor* UFPCBlueprintLibrary::GetViewTarget(APlayerCameraManager* PlayerCameraManager)
+{
+	return PlayerCameraManager->GetViewTarget();
+}
+
+float UFPCBlueprintLibrary::GetCurrentTime(UUMGSequencePlayer* SequencePlayer)
+{
+	return SequencePlayer ? SequencePlayer->GetCurrentTime().AsSeconds() : 0.0f;
 }
