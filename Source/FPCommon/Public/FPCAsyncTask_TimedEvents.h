@@ -15,7 +15,7 @@ struct FTimedEvent
 	GENERATED_BODY()
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	float Time;
+	float Time = 0.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FGameplayTag EventTag;
