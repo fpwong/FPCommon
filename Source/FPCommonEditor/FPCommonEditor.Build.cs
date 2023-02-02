@@ -43,7 +43,11 @@ public class FPCommonEditor : ModuleRules
 				"AnimGraphRuntime",
 				"AnimGraph",
 				"BlueprintGraph",
-				"FPCommon"
+				"FPCommon", 
+				"CurveTableEditor",
+				"HTTP",
+				"ToolMenus",
+				"UnrealEd"
 			}
 			);
 		
