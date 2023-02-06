@@ -2,9 +2,6 @@
 
 #include "FPCommonEditorModule.h"
 
-#include "FPCommonEditor/LoadDataURL/FPCLoadDataURL_CurveTable.h"
-#include "FPCommonEditor/LoadDataURL/FPCLoadDataURL_DataTable.h"
-
 #define LOCTEXT_NAMESPACE "FPCommonEditorModule"
 
 void FFPCommonEditorModule::StartupModule()
@@ -26,8 +23,6 @@ void FFPCommonEditorModule::ShutdownModule()
 void FFPCommonEditorModule::OnPostEngineInit()
 {
 	UE_LOG(LogTemp, Log, TEXT("FPCommonEditor::OnPostEngineInit"));
-	FFPCLoadDataURL_CurveTable::Get().Init();
-	FFPCLoadDataURL_DataTable::Get().Init();
 }
 
 #undef LOCTEXT_NAMESPACE
