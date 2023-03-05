@@ -22,7 +22,7 @@ class FPCOMMON_API UFPCBlueprintLibrary : public UBlueprintFunctionLibrary
 	static float GetAngleBetweenVectors(FVector A, FVector B);
 
 	UFUNCTION(BlueprintCallable, Category = "Misc")
-	static float GetDistanceBetweenCharacters(ACharacter* A, ACharacter* B);
+	static float GetDistanceBetweenActors(AActor* A, AActor* B);
 
 	UFUNCTION(BlueprintCallable, Category = "Misc")
 	static void SetActorLocationOnGround(AActor* Actor, const FVector& NewLocation);

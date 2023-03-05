@@ -24,8 +24,13 @@ float UFPCBlueprintLibrary::GetAngleBetweenVectors(FVector A, FVector B)
 	return FMath::RadiansToDegrees(FMath::Acos(FVector::DotProduct(A, B)));
 }
 
-float UFPCBlueprintLibrary::GetDistanceBetweenCharacters(ACharacter* A, ACharacter* B)
+float UFPCBlueprintLibrary::GetDistanceBetweenActors(AActor* A, AActor* B)
 {
+	if (!A || !B)
+	{
+		return 0.0f;
+	}
+
 	const float CapsuleRadius = A->GetSimpleCollisionRadius() + B->GetSimpleCollisionRadius();
 	const float Distance = (A->GetActorLocation() - B->GetActorLocation()).Size2D() - CapsuleRadius;
 	return Distance;
