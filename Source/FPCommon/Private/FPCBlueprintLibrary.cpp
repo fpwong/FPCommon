@@ -101,12 +101,12 @@ AGameSession* UFPCBlueprintLibrary::GetGameSession(AGameModeBase* GameMode)
 
 bool UFPCBlueprintLibrary::KickPlayer(AGameSession* GameSession, APlayerController* KickedPlayer, const FText& KickReason)
 {
-	return GameSession ? GameSession->KickPlayer(KickedPlayer, KickReason) : nullptr;
+	return GameSession ? GameSession->KickPlayer(KickedPlayer, KickReason) : false;
 }
 
 bool UFPCBlueprintLibrary::BanPlayer(AGameSession* GameSession, APlayerController* BannedPlayer, const FText& BanReason)
 {
-	return GameSession ? GameSession->BanPlayer(BannedPlayer, BanReason) : nullptr;
+	return GameSession ? GameSession->BanPlayer(BannedPlayer, BanReason) : false;
 }
 
 AActor* UFPCBlueprintLibrary::GetViewTarget(APlayerCameraManager* PlayerCameraManager)
