@@ -47,6 +47,7 @@ public class FPCommon : ModuleRules
 				"GameplayTags",
 				"UMG",
 				"CommonUI",
+				"InputCore",
 
 				//"AnimGraph",
 				//"BlueprintGraph"
