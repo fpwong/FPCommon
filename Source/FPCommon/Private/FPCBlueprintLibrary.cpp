@@ -74,6 +74,22 @@ void UFPCBlueprintLibrary::SetActorLocationOnGround(AActor* Actor, const FVector
 	}
 }
 
+bool UFPCBlueprintLibrary::ProjectLocationOnGround(UObject* WorldContextObject, FVector Location, FVector& GroundLocation, double TraceDistance)
+{
+	const FVector LineStart = Location + FVector(0, 0, TraceDistance);
+	const FVector LineEnd = Location - FVector(0, 0, TraceDistance);
+	FCollisionObjectQueryParams ObjectParams(FCollisionObjectQueryParams::InitType::AllStaticObjects);
+
+	FHitResult OutHit;
+	if (WorldContextObject->GetWorld()->LineTraceSingleByObjectType(OutHit, LineStart, LineEnd, ObjectParams))
+	{
+		GroundLocation = OutHit.Location;
+		return true; 
+	}
+
+	return false;
+}
+
 AActor* UFPCBlueprintLibrary::GetClosestActor(const FVector& Location, const TArray<AActor*>& Actors)
 {
 	TArray<AActor*> ActorsCopy = Actors;
@@ -117,4 +133,10 @@ AActor* UFPCBlueprintLibrary::GetViewTarget(APlayerCameraManager* PlayerCameraMa
 float UFPCBlueprintLibrary::GetCurrentTime(UUMGSequencePlayer* SequencePlayer)
 {
 	return SequencePlayer ? SequencePlayer->GetCurrentTime().AsSeconds() : 0.0f;
+}
+
+void UFPCBlueprintLibrary::RegisterComponentWithWorld(UObject* WorldContextObject, UActorComponent* ActorComponent)
+{
+	check(WorldContextObject)
+	ActorComponent->RegisterComponentWithWorld(WorldContextObject->GetWorld());
 }

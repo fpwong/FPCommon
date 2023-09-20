@@ -27,6 +27,9 @@ class FPCOMMON_API UFPCBlueprintLibrary : public UBlueprintFunctionLibrary
 	UFUNCTION(BlueprintCallable, Category = "Misc")
 	static void SetActorLocationOnGround(AActor* Actor, const FVector& NewLocation);
 
+	UFUNCTION(BlueprintCallable, Category = "Misc", meta=(WorldContext="WorldContextObject", ExpandBoolAsExecs ="ReturnValue"))
+	static bool ProjectLocationOnGround(UObject* WorldContextObject, FVector Location, FVector& GroundLocation, double TraceDistance = 2000);
+
 	UFUNCTION(BlueprintCallable, Category = "Misc")
     static AActor* GetClosestActor(const FVector& Location, const TArray<AActor*>& Actors);
 
@@ -44,4 +47,7 @@ class FPCOMMON_API UFPCBlueprintLibrary : public UBlueprintFunctionLibrary
 
 	UFUNCTION(BlueprintCallable, Category = "Misc")
 	static float GetCurrentTime(UUMGSequencePlayer* SequencePlayer);
+
+	UFUNCTION(BlueprintCallable, Category = "Misc", meta = (WorldContext = "WorldContextObject"))
+	static void RegisterComponentWithWorld(UObject* WorldContextObject, UActorComponent* ActorComponent);
 };
