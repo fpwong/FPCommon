@@ -15,6 +15,7 @@ class FPCOMMON_API UFPCBlueprintLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 
+public:
 	UFUNCTION(BlueprintPure, Category = "Affiliation")
 	static FAISenseAffiliationFilter MakeAffiliationFilter(bool bDetectEnemies, bool bDetectNeutrals, bool bDetectFriendlies);
 
