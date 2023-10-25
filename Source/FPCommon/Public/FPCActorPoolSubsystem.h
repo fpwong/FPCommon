@@ -18,11 +18,13 @@ class FPCOMMON_API IFPCPoolableActorInterface : public IInterface
 
 public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Actor Pooling")
-	void ActorPoolActivate();
+	void PrepareForGame();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Actor Pooling")
-	void ActorPoolDeactivate();
+	void PrepareForPooling();
 };
+
+DECLARE_DYNAMIC_DELEGATE_OneParam(FFPActorPoolInitialize, AActor*, Actor);
 
 UCLASS()
 class FPCOMMON_API UFPCActorPoolSubsystem : public UWorldSubsystem
@@ -33,6 +35,11 @@ public:
 	UFUNCTION(BlueprintCallable, meta = (DeterminesOutputType="ActorClass"))
 	AActor* SpawnOrRetrieveFromPool(TSubclassOf<AActor> ActorClass, FTransform Transform);
 
+	AActor* SpawnOrRetrieveFromPoolInitialize(TSubclassOf<AActor> ActorClass, FTransform Transform, TFunctionRef<void(AActor*)> InitFunc);
+
+	UFUNCTION(BlueprintCallable, meta = (DeterminesOutputType="ActorClass"))
+	AActor* SpawnOrRetrieveFromPoolDeferred(TSubclassOf<AActor> ActorClass, FTransform Transform);
+
 	UFUNCTION(BlueprintCallable, meta = (DeterminesOutputType="ActorClass"))
 	void ReleaseActorToPool(AActor* Actor);
 
@@ -41,6 +48,9 @@ public:
 	{
 		return Cast<T>(SpawnOrRetrieveFromPool(ActorClass, Transform));
 	}
+
+	void ActivateActor(AActor* Actor);
+	void DeactivateActor(AActor* Actor);
 
 protected:
 	TMap<TSubclassOf<AActor>, TArray<TObjectPtr<AActor>>> PooledActors;
