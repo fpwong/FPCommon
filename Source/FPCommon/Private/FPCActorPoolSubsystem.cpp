@@ -89,11 +89,11 @@ void UFPCActorPoolSubsystem::ReleaseActorToPool(AActor* Actor)
 	TArray<TObjectPtr<AActor>>& Pool = PooledActors.FindOrAdd(Actor->GetClass());
 	if (!Pool.Contains(Actor))
 	{
+		IFPCPoolableActorInterface::Execute_PrepareForPooling(Actor);
 		Actor->SetActorHiddenInGame(true);
 		Actor->SetActorEnableCollision(false);
 		Actor->SetActorTickEnabled(false);
 		Actor->UninitializeComponents();
-		IFPCPoolableActorInterface::Execute_PrepareForPooling(Actor);
 		Pool.Add(Actor);
 		++NumActorPooled;
 	}
