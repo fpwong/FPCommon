@@ -51,4 +51,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Misc", meta = (WorldContext = "WorldContextObject"))
 	static void RegisterComponentWithWorld(UObject* WorldContextObject, UActorComponent* ActorComponent);
+
+	UFUNCTION(BlueprintCallable, Category = "Misc", meta = (DeterminesOutputType = "Class"))
+	static UObject* GetClassDefaultObject(TSubclassOf<UObject> Class);
 };

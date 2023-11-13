@@ -140,3 +140,8 @@ void UFPCBlueprintLibrary::RegisterComponentWithWorld(UObject* WorldContextObjec
 	check(WorldContextObject)
 	ActorComponent->RegisterComponentWithWorld(WorldContextObject->GetWorld());
 }
+
+UObject* UFPCBlueprintLibrary::GetClassDefaultObject(TSubclassOf<UObject> Class)
+{
+	return Class->GetDefaultObject();
+}
