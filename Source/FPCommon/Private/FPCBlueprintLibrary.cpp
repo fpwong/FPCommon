@@ -143,5 +143,12 @@ void UFPCBlueprintLibrary::RegisterComponentWithWorld(UObject* WorldContextObjec
 
 UObject* UFPCBlueprintLibrary::GetClassDefaultObject(TSubclassOf<UObject> Class)
 {
+	if (!Class) return nullptr;
 	return Class->GetDefaultObject();
+}
+
+void UFPCBlueprintLibrary::FPBlueprintBreakpoint()
+{
+	check(false);
+	UE_LOG(LogTemp, Warning, TEXT("Hit breakpoint..."));
 }

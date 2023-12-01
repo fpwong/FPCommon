@@ -54,4 +54,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Misc", meta = (DeterminesOutputType = "Class"))
 	static UObject* GetClassDefaultObject(TSubclassOf<UObject> Class);
+
+	UFUNCTION(BlueprintCallable, Category = "Misc")
+	static void FPBlueprintBreakpoint();
 };
