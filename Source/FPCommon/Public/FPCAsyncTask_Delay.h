@@ -39,7 +39,8 @@ protected:
 
 	FTimerHandle DelayHandle;
 
-	UObject* WorldContextObject;
+	UPROPERTY()
+	UObject* WorldContextObject = nullptr;
 
 	virtual void DelayEnded();
 };

@@ -8,6 +8,7 @@
 #include "FPCAsyncTask_TimedEvents.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTimedEvent, FGameplayTag, EventTag);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FFPOnTimedEventsFinished);
 
 USTRUCT(BlueprintType)
 struct FTimedEvent
@@ -24,7 +25,7 @@ struct FTimedEvent
 UCLASS(BlueprintType, meta=(ExposedAsyncProxy = AsyncTask))
 class FPCOMMON_API UFPCAsyncTask_TimedEvents
 	: public UBlueprintAsyncActionBase
-	, public FTickableGameObject
+	// , public FTickableGameObject
 {
 	GENERATED_BODY()
 
@@ -32,19 +33,26 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnTimedEvent OnTimedEvent;
 
+	UPROPERTY(BlueprintAssignable)
+	FFPOnTimedEventsFinished OnFinished;
+
 	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true", WorldContext = "WorldContextObject"))
 	static UFPCAsyncTask_TimedEvents* CreatedTimedEvents(UObject* WorldContextObject, TArray<FTimedEvent> Events, bool bStartImmediately = true);
 
 	UFUNCTION(BlueprintCallable)
 	void StartTimedEvent();
 
+	UFUNCTION(BlueprintCallable)
+	static TArray<FTimedEvent> MakeTimedEventsFixedDelay(FGameplayTag EventTag, int NumEvents = 1, float Delay = 0.1f, float InitialDelay = 0.0f);
+
 protected:
 	// ~ FTickableGameObject
-	void OnTick();
-	virtual TStatId GetStatId() const override;
+	// virtual void Tick(float DeltaTime) override;
+	// virtual TStatId GetStatId() const override;
+	// virtual ETickableTickType GetTickableTickType() const override;
 	// ~ FTickableGameObject
 
-	virtual void Tick(float DeltaTime) override;
+	void OnTick();
 
 	UFUNCTION(BlueprintCallable)
 	void EndTask();
@@ -55,4 +63,5 @@ private:
 	float StartTime = -1;
 
 	int NextEventIndex = 0;
+
 };

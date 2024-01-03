@@ -11,6 +11,7 @@ UFPCAsyncTask_TimedEvents* UFPCAsyncTask_TimedEvents::CreatedTimedEvents(UObject
 
 	UFPCAsyncTask_TimedEvents* TimedEvents = NewObject<UFPCAsyncTask_TimedEvents>(WorldContextObject);
 	TimedEvents->Events = Events;
+	TimedEvents->RegisterWithGameInstance(WorldContextObject);
 
 	if (bStartImmediately)
 	{
@@ -22,6 +23,12 @@ UFPCAsyncTask_TimedEvents* UFPCAsyncTask_TimedEvents::CreatedTimedEvents(UObject
 
 void UFPCAsyncTask_TimedEvents::OnTick()
 {
+	if (!IsValid(this))
+	{
+		// UE_LOG(LogTemp, Warning, TEXT("Why am i still ticking %p"), this);
+		return;
+	}
+
 	const float TimeSinceStart = GetWorld()->GetTimeSeconds() - StartTime;
 
 	// assume events are in time order
@@ -37,42 +44,65 @@ void UFPCAsyncTask_TimedEvents::OnTick()
 
 		OnTimedEvent.Broadcast(Events[i].EventTag);
 
-		UE_LOG(LogTemp, Warning, TEXT("%d"), i);
+		// UE_LOG(LogTemp, Warning, TEXT("%d"), i);
 
 		// we have reached the end, end the task
-		if (i == Events.Num())
+		if (NextEventIndex == Events.Num())
 		{
+			// UE_LOG(LogTemp, Warning, TEXT("Finished?"));
+			OnFinished.Broadcast();
 			EndTask();
 		}
 	}
 }
 
-TStatId UFPCAsyncTask_TimedEvents::GetStatId() const
-{
-	RETURN_QUICK_DECLARE_CYCLE_STAT(UFPCAsyncTask_TimedEvents, STATGROUP_Tickables);
-}
+// TStatId UFPCAsyncTask_TimedEvents::GetStatId() const
+// {
+// 	RETURN_QUICK_DECLARE_CYCLE_STAT(UFPCAsyncTask_TimedEvents, STATGROUP_Tickables);
+// }
 
-void UFPCAsyncTask_TimedEvents::Tick(float DeltaTime)
-{
-	if (StartTime >= 0)
-	{
-		OnTick();
-	}
-}
+// void UFPCAsyncTask_TimedEvents::Tick(float DeltaTime)
+// {
+// 	if (StartTime >= 0)
+// 	{
+// 		OnTick();
+// 	}
+// }
 
 void UFPCAsyncTask_TimedEvents::StartTimedEvent()
 {
+	StartTime = GetWorld()->GetTimeSeconds();
+
 	if (!TickHandle.IsValid())
 	{
-		StartTime = GetWorld()->GetTimeSeconds();
-		// GetWorld()->GetTimerManager().SetTimer(TickHandle, this, &UFPCAsyncTask_TimedEvents::OnTick, 0.0f, true);
+		// TODO figure out how to delete FTickableGameObject, for some reason the obj never gets cleaned up?
+		GetWorld()->GetTimerManager().SetTimer(TickHandle, this, &UFPCAsyncTask_TimedEvents::OnTick, 0.025f, true);
 	}
+}
+
+TArray<FTimedEvent> UFPCAsyncTask_TimedEvents::MakeTimedEventsFixedDelay(FGameplayTag EventTag, int NumEvents, float Delay, float InitialDelay)
+{
+	TArray<FTimedEvent> OutEvents;
+
+	for (int i = 0; i < NumEvents; ++i)
+	{
+		OutEvents.Add(FTimedEvent(InitialDelay + (i * Delay), EventTag));
+	}
+
+	return OutEvents;
 }
 
 void UFPCAsyncTask_TimedEvents::EndTask()
 {
+	if (IsRooted())
+	{
+		RemoveFromRoot();
+	}
+
 	SetReadyToDestroy();
 	MarkAsGarbage();
+
+	// UE_LOG(LogTemp, Warning, TEXT("END TASK %p"), this);
 
 	if (TickHandle.IsValid())
 	{
@@ -80,3 +110,8 @@ void UFPCAsyncTask_TimedEvents::EndTask()
 		TickHandle.Invalidate();
 	}
 }
+
+// ETickableTickType UFPCAsyncTask_TimedEvents::GetTickableTickType() const
+// {
+// 	return HasAnyFlags(RF_ClassDefaultObject) ? ETickableTickType::Never : ETickableTickType::Always;
+// }
