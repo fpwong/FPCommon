@@ -8,6 +8,7 @@
 // #include "Engine/"
 #include "FPCBlueprintLibrary.generated.h"
 
+class UCommonActivatableWidgetContainerBase;
 class AGameSession;
 
 UCLASS()
@@ -57,4 +58,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Misc")
 	static void FPBlueprintBreakpoint();
+
+	UFUNCTION(BlueprintCallable, Category = "CommonUI", BlueprintPure)
+	static int32 GetNumWidgets(UCommonActivatableWidgetContainerBase* WidgetContainer);
 };

@@ -2,6 +2,7 @@
 
 #include "FPCBlueprintLibrary.h"
 
+#include "CommonActivatableWidget.h"
 #include "Animation/UMGSequencePlayer.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/PlayerController.h"
@@ -9,6 +10,7 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/GameModeBase.h"
 #include "GameFramework/GameSession.h"
+#include "Widgets/CommonActivatableWidgetContainer.h"
 
 FAISenseAffiliationFilter UFPCBlueprintLibrary::MakeAffiliationFilter(const bool bDetectEnemies, const bool bDetectNeutrals, const bool bDetectFriendlies)
 {
@@ -151,4 +153,9 @@ void UFPCBlueprintLibrary::FPBlueprintBreakpoint()
 {
 	check(false);
 	UE_LOG(LogTemp, Warning, TEXT("Hit breakpoint..."));
+}
+
+int32 UFPCBlueprintLibrary::GetNumWidgets(UCommonActivatableWidgetContainerBase* WidgetContainer)
+{
+	return WidgetContainer ? WidgetContainer->GetNumWidgets() : 0;
 }
