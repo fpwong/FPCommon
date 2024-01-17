@@ -159,3 +159,12 @@ int32 UFPCBlueprintLibrary::GetNumWidgets(UCommonActivatableWidgetContainerBase*
 {
 	return WidgetContainer ? WidgetContainer->GetNumWidgets() : 0;
 }
+
+void UFPCBlueprintLibrary::ServerTravel(UObject* WorldContextObject, TSoftObjectPtr<UWorld> Level, bool bAbsolute)
+{
+	if (WorldContextObject && !Level.IsNull())
+	{
+		const FString LevelName = FPackageName::ObjectPathToPackageName(Level.ToString());
+		WorldContextObject->GetWorld()->ServerTravel(LevelName, bAbsolute);
+	}
+}

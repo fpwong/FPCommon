@@ -61,4 +61,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "CommonUI", BlueprintPure)
 	static int32 GetNumWidgets(UCommonActivatableWidgetContainerBase* WidgetContainer);
+
+	UFUNCTION(BlueprintCallable, Category = "Misc", meta=(WorldContext="WorldContextObject"))
+	static void ServerTravel(UObject* WorldContextObject, TSoftObjectPtr<UWorld> Level, bool bAbsolute = false);
 };
