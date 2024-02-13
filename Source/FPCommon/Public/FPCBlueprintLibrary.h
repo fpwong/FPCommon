@@ -35,6 +35,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Misc")
     static AActor* GetClosestActor(const FVector& Location, const TArray<AActor*>& Actors);
 
+	UFUNCTION(BlueprintCallable, Category = "Misc")
+	static void SortActorsByDistance(UPARAM(ref) TArray<AActor*>& Actors, const FVector& Location, bool bClosest = true);
+
+	UFUNCTION(BlueprintCallable, Category = "Misc")
+	static TArray<AActor*> GetActorsSlice(const TArray<AActor*>& Actors, int Start, int End);
+
 	UFUNCTION(BlueprintPure, Category = "GameSession")
     static AGameSession* GetGameSession(AGameModeBase* GameMode);
 

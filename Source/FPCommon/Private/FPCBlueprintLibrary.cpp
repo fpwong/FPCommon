@@ -112,6 +112,37 @@ AActor* UFPCBlueprintLibrary::GetClosestActor(const FVector& Location, const TAr
 	return ActorsCopy[0];
 }
 
+void UFPCBlueprintLibrary::SortActorsByDistance(TArray<AActor*>& Actors, const FVector& Location, bool bClosest)
+{
+	const auto Pred = [&Location, &bClosest](const AActor& ActorA, const AActor& ActorB)
+	{
+		const float DistA = FVector::DistSquared2D(ActorA.GetActorLocation(), Location);
+		const float DistB = FVector::DistSquared2D(ActorB.GetActorLocation(), Location);
+		return bClosest ? (DistA < DistB) : (DistA > DistB);
+	};
+
+	Actors.Sort(Pred);
+}
+
+TArray<AActor*> UFPCBlueprintLibrary::GetActorsSlice(const TArray<AActor*>& Actors, int Start, int End)
+{
+	TArray<AActor*> OutActors;
+
+	for (int i = Start; i < End; ++i)
+	{
+		if (Actors.IsValidIndex(i))
+		{
+			OutActors.Add(Actors[i]);
+		}
+		else
+		{
+			break;
+		}
+	}
+
+	return OutActors;
+}
+
 AGameSession* UFPCBlueprintLibrary::GetGameSession(AGameModeBase* GameMode)
 {
 	return GameMode ? GameMode->GameSession : nullptr;
