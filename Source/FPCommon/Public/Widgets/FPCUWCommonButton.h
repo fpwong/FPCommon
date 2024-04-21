@@ -15,6 +15,12 @@ class FPCOMMON_API UFPCUWCommonButton : public UCommonButtonBase
 public:
 	virtual void NativeOnCurrentTextStyleChanged() override;
 
+	// fix for playing sound when clicked (ignores pressed method)
+	virtual void HandleTriggeringActionCommited() override;
+	virtual void NativeOnPressed() override;
+	virtual void NativeOnClicked() override;
+	
+
 	virtual bool Initialize() override;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidgetOptional))

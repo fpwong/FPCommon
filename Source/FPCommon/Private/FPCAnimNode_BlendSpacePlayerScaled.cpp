@@ -1,7 +1,7 @@
 #pragma once
 
 #include "FPCAnimNode_BlendSpacePlayerScaled.h"
-#include "Animation/BlendSpaceBase.h"
+// #include "Animation/BlendSpaceBase.h"
 
 void FFPCAnimNode_BlendSpacePlayerScaled::UpdateAssetPlayer(const FAnimationUpdateContext& Context)
 {

@@ -22,7 +22,6 @@ UFPCAsyncTask_Delay* UFPCAsyncTask_Delay::FPCDelay(UObject* WorldContextObject, 
 void UFPCAsyncTask_Delay::EndTask()
 {
 	SetReadyToDestroy();
-	MarkPendingKill();
 	GetWorld()->GetTimerManager().ClearTimer(DelayHandle);
 }
 

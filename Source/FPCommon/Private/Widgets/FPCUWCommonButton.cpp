@@ -16,6 +16,41 @@ void UFPCUWCommonButton::NativeOnCurrentTextStyleChanged()
 	}
 }
 
+void UFPCUWCommonButton::HandleTriggeringActionCommited()
+{
+	// HandleButtonClicked();
+	Super::HandleTriggeringActionCommited();
+}
+
+void UFPCUWCommonButton::NativeOnPressed()
+{
+	Super::NativeOnPressed();
+}
+
+void UFPCUWCommonButton::NativeOnClicked()
+{
+	// // not using locked in my game but you probably want to check if it is locked and play different sound
+	// if (!GetLocked())
+	// {
+	// 	if (UCommonButtonStyle* CurrentStyle = GetStyle())
+	// 	{
+	// 		FSlateApplication::Get().PlaySound(CurrentStyle->PressedSlateSound);
+	// 	}
+	// }
+	// else
+	// {
+	// 	if (UCommonButtonStyle* CurrentStyle = GetStyle())
+	// 	{
+	// 		if (CurrentStyle->LockedPressedSlateSound.bHasSound)
+	// 		{
+	// 			FSlateApplication::Get().PlaySound(CurrentStyle->LockedPressedSlateSound.Sound);
+	// 		}
+	// 	}
+	// }
+
+	Super::NativeOnClicked();
+}
+
 bool UFPCUWCommonButton::Initialize()
 {
 	if (!Super::Initialize())

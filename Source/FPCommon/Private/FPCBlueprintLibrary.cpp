@@ -5,6 +5,7 @@
 #include "CommonActivatableWidget.h"
 #include "Animation/UMGSequencePlayer.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/TextWidgetTypes.h"
 #include "GameFramework/PlayerController.h"
 #include "Engine/World.h"
 #include "GameFramework/Character.h"

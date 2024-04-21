@@ -8,6 +8,7 @@
 // #include "Engine/"
 #include "FPCBlueprintLibrary.generated.h"
 
+class UTextLayoutWidget;
 class UCommonActivatableWidgetContainerBase;
 class AGameSession;
 
