@@ -1,4 +1,4 @@
-// Copyright 2020 Dan Kestranek.
+
 
 #include "FPCAsyncTask_Delay.h"
 #include "Kismet/KismetSystemLibrary.h"

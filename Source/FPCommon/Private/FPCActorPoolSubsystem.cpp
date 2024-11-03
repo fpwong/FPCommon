@@ -12,8 +12,9 @@ AActor* UFPCActorPoolSubsystem::SpawnOrRetrieveFromPool(TSubclassOf<AActor> Acto
 		PooledActor = Pool->Pop();
 		IFPCPoolableActorInterface::Execute_PrepareForGame(PooledActor);
 		PooledActor->SetActorTransform(Transform, false, nullptr, ETeleportType::ResetPhysics);
-		PooledActor->SetActorTickEnabled(true);
-		PooledActor->InitializeComponents();
+		// PooledActor->SetActorTickEnabled(true);
+		// PooledActor->InitializeComponents();
+		ActivateActor(PooledActor, true);
 		--NumActorPooled;
 	}
 	else // spawn new actor
@@ -22,10 +23,11 @@ AActor* UFPCActorPoolSubsystem::SpawnOrRetrieveFromPool(TSubclassOf<AActor> Acto
 		SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		PooledActor = GetWorld()->SpawnActor<AActor>(ActorClass, Transform, SpawnParameters);
 		IFPCPoolableActorInterface::Execute_PrepareForGame(PooledActor);
+		ActivateActor(PooledActor, false);
 	}
 
-	PooledActor->SetActorHiddenInGame(false);
-	PooledActor->SetActorEnableCollision(true);
+	// PooledActor->SetActorHiddenInGame(false);
+	// PooledActor->SetActorEnableCollision(true);
 	return PooledActor;
 }
 
@@ -40,7 +42,7 @@ AActor* UFPCActorPoolSubsystem::SpawnOrRetrieveFromPoolInitialize(TSubclassOf<AA
 		IFPCPoolableActorInterface::Execute_PrepareForGame(PooledActor);
 		PooledActor->SetActorTransform(Transform, false, nullptr, ETeleportType::ResetPhysics);
 		InitFunc(PooledActor);
-		PooledActor->InitializeComponents();
+		ActivateActor(PooledActor, true);
 		--NumActorPooled;
 	}
 	else // spawn new actor
@@ -51,17 +53,16 @@ AActor* UFPCActorPoolSubsystem::SpawnOrRetrieveFromPoolInitialize(TSubclassOf<AA
 		InitFunc(PooledActor);
 		PooledActor->FinishSpawning(Transform);
 		IFPCPoolableActorInterface::Execute_PrepareForGame(PooledActor);
+		ActivateActor(PooledActor, false);
 	}
-
-	PooledActor->SetActorTickEnabled(true);
-	PooledActor->SetActorHiddenInGame(false);
-	PooledActor->SetActorEnableCollision(true);
 
 	return PooledActor;
 }
 
 AActor* UFPCActorPoolSubsystem::SpawnOrRetrieveFromPoolDeferred(TSubclassOf<AActor> ActorClass, FTransform Transform)
 {
+	// TODO
+	check(false);
 	AActor* PooledActor;
 
 	TArray<TObjectPtr<AActor>>* Pool = PooledActors.Find(ActorClass);
@@ -76,9 +77,7 @@ AActor* UFPCActorPoolSubsystem::SpawnOrRetrieveFromPoolDeferred(TSubclassOf<AAct
 		FActorSpawnParameters SpawnParameters;
 		SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		PooledActor = GetWorld()->SpawnActor<AActor>(ActorClass, Transform, SpawnParameters);
-		// PooledActor = GetWorld()->SpawnActorDeferred<AActor>(ActorClass, Transform);
 		IFPCPoolableActorInterface::Execute_PrepareForPooling(PooledActor);
-		// DeactivateActor(PooledActor);
 	}
 
 	return PooledActor;
@@ -90,21 +89,23 @@ void UFPCActorPoolSubsystem::ReleaseActorToPool(AActor* Actor)
 	if (!Pool.Contains(Actor))
 	{
 		IFPCPoolableActorInterface::Execute_PrepareForPooling(Actor);
-		Actor->SetActorHiddenInGame(true);
-		Actor->SetActorEnableCollision(false);
-		Actor->SetActorTickEnabled(false);
-		Actor->UninitializeComponents();
+		DeactivateActor(Actor);
 		Pool.Add(Actor);
 		++NumActorPooled;
 	}
 }
 
-void UFPCActorPoolSubsystem::ActivateActor(AActor* Actor)
+void UFPCActorPoolSubsystem::ActivateActor(AActor* Actor, bool bInitComponents)
 {
 	Actor->SetActorHiddenInGame(false);
 	Actor->SetActorEnableCollision(true);
 	Actor->SetActorTickEnabled(true);
-	Actor->InitializeComponents();
+	Actor->SetNetDormancy(DORM_Awake);
+
+	if (bInitComponents)
+	{
+		Actor->InitializeComponents();
+	}
 }
 
 void UFPCActorPoolSubsystem::DeactivateActor(AActor* Actor)
@@ -113,4 +114,5 @@ void UFPCActorPoolSubsystem::DeactivateActor(AActor* Actor)
 	Actor->SetActorEnableCollision(false);
 	Actor->SetActorTickEnabled(false);
 	Actor->UninitializeComponents();
+	Actor->SetNetDormancy(DORM_DormantAll);
 }

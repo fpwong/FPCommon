@@ -71,4 +71,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Misc", meta=(WorldContext="WorldContextObject"))
 	static void ServerTravel(UObject* WorldContextObject, TSoftObjectPtr<UWorld> Level, bool bAbsolute = false);
+
+	UFUNCTION(BlueprintCallable, Category = "Misc", meta=(WorldContext="WorldContextObject"))
+	static APlayerController* GetPrimaryPlayerController(UObject* WorldContextObject);
 };

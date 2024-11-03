@@ -49,7 +49,7 @@ public:
 		return Cast<T>(SpawnOrRetrieveFromPool(ActorClass, Transform));
 	}
 
-	void ActivateActor(AActor* Actor);
+	void ActivateActor(AActor* Actor, bool bInitComponents);
 	void DeactivateActor(AActor* Actor);
 
 protected:

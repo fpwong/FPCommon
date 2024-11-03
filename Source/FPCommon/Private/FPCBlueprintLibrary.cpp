@@ -200,3 +200,19 @@ void UFPCBlueprintLibrary::ServerTravel(UObject* WorldContextObject, TSoftObject
 		WorldContextObject->GetWorld()->ServerTravel(LevelName, bAbsolute);
 	}
 }
+
+APlayerController* UFPCBlueprintLibrary::GetPrimaryPlayerController(UObject* WorldContextObject)
+{
+	if (WorldContextObject)
+	{
+		if (auto World = WorldContextObject->GetWorld())
+		{
+			if (auto Inst = World->GetGameInstance())
+			{
+				return Inst->GetPrimaryPlayerController();
+			}
+		}
+	}
+
+	return nullptr;
+}
