@@ -1,5 +1,8 @@
 #include "FPCSimpleAnimInstance.h"
 
+#include "GameFramework/Character.h"
+#include "GameFramework/PawnMovementComponent.h"
+
 void UFPCSimpleAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
@@ -16,7 +19,13 @@ void UFPCSimpleAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		return;
 	}
 
-	Speed = FMath::FInterpTo(Speed, OwningPawn->GetVelocity().Size2D(), DeltaSeconds, 12.0f);
+
+	bool bIsInAir = OwningPawn->GetMovementComponent() && !OwningPawn->GetMovementComponent()->IsMovingOnGround();
+
+	float TargetSpeed = bIsInAir ? 0.0f : OwningPawn->GetVelocity().Size2D();
+
+	Speed = FMath::FInterpTo(Speed, TargetSpeed, DeltaSeconds, 10.0f);
+
 	// Speed = FMath::FInterpTo(Speed, OwningPawn->GetVelocity().Size2D(), DeltaSeconds, 8.0f);
 
 	// float NewSpeed = FMath::FInterpConstantTo(Speed, OwningPawn->GetVelocity().Size2D(), DeltaSeconds, 10.0f);

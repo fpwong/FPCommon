@@ -30,6 +30,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Misc")
 	static void SetActorLocationOnGround(AActor* Actor, const FVector& NewLocation);
 
+	UFUNCTION(BlueprintCallable)
+	static FBox GetBoxIntersection(FBox A, FBox B);
+
 	UFUNCTION(BlueprintCallable, Category = "Misc", meta=(WorldContext="WorldContextObject", ExpandBoolAsExecs ="ReturnValue"))
 	static bool ProjectLocationOnGround(UObject* WorldContextObject, FVector Location, FVector& GroundLocation, double TraceDistance = 2000);
 

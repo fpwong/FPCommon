@@ -77,6 +77,21 @@ void UFPCBlueprintLibrary::SetActorLocationOnGround(AActor* Actor, const FVector
 	}
 }
 
+FBox UFPCBlueprintLibrary::GetBoxIntersection(FBox A, FBox B)
+{
+	const FVector Min(
+		FMath::Max(A.Min.X, B.Min.X),
+		FMath::Max(A.Min.Y, B.Min.Y),
+		FMath::Max(A.Min.Z, B.Min.Z));
+
+	const FVector Max(
+		FMath::Min(A.Max.X, B.Max.X),
+		FMath::Min(A.Max.Y, B.Max.Y),
+		FMath::Min(A.Max.Z, B.Max.Z));
+
+	return FBox(Min, Max);
+}
+
 bool UFPCBlueprintLibrary::ProjectLocationOnGround(UObject* WorldContextObject, FVector Location, FVector& GroundLocation, double TraceDistance)
 {
 	const FVector LineStart = Location + FVector(0, 0, TraceDistance);
