@@ -50,6 +50,24 @@ struct FFPCMaterialOverlayLayer
 	// FFPCMaterialOverlayLayer(USkeletalMeshComponent* InOriginalMesh, UPoseableMeshComponent* InPoseableMeshComponent);
 
 	void DestroyLayer();
+
+	UPROPERTY(Transient)
+	float LifeTime = 0.0f;
+};
+
+USTRUCT()
+struct FFPMaterialOverlayLayerSettings
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere)
+	float DestroyAfterTime = -1;
+
+	UPROPERTY(EditAnywhere)
+	float RetriggerTime = -1;
+
+	UPROPERTY(Transient)
+	float LastTriggered = -1;
 };
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
@@ -69,6 +87,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void RemoveLayer(FGameplayTag LayerID);
+
+	UPROPERTY(EditDefaultsOnly)
+	TMap<FGameplayTag, FFPMaterialOverlayLayerSettings> LayerSettings;
 
 	FFPCSkeletalMeshBinding CreateSkeletalMeshBinding(UMeshComponent* MeshComponent, UMaterialInterface* Material);
 

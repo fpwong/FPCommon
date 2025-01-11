@@ -5,7 +5,9 @@
 #include "Components/PoseableMeshComponent.h"
 
 FFPCSkeletalMeshBinding::FFPCSkeletalMeshBinding(USkeletalMeshComponent* InOriginalMesh, UPoseableMeshComponent* InPoseableMeshComponent)
-	: OriginalMesh(InOriginalMesh), PoseableMeshComponent(InPoseableMeshComponent) { }
+	: OriginalMesh(InOriginalMesh), PoseableMeshComponent(InPoseableMeshComponent)
+{
+}
 
 bool FFPCSkeletalMeshBinding::IsValid()
 {
@@ -48,9 +50,23 @@ void UFPCMaterialOverlayComponent::TickComponent(float DeltaTime, ELevelTick Tic
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	for (const auto& Kvp : Layers)
+	for (auto It = Layers.CreateIterator(); It; ++It)
 	{
-		const FFPCMaterialOverlayLayer& Layer = Kvp.Value;
+		auto& Tag = It.Key();
+		auto& Layer = It.Value();
+
+		Layer.LifeTime += DeltaTime;
+
+		if (FFPMaterialOverlayLayerSettings* Settings = LayerSettings.Find(Tag))
+		{
+			if (Settings->DestroyAfterTime > 0 && Layer.LifeTime >= Settings->DestroyAfterTime)
+			{
+				Layer.DestroyLayer();
+				It.RemoveCurrent();
+				continue;
+			}
+		}
+
 		for (const FFPCSkeletalMeshBinding& SkeletalMeshBinding : Layer.SkeletalMeshBindings)
 		{
 			if (SkeletalMeshBinding.OriginalMesh.IsValid() && SkeletalMeshBinding.PoseableMeshComponent.IsValid())
@@ -68,41 +84,24 @@ void UFPCMaterialOverlayComponent::AddLayer(FGameplayTag LayerID, UMeshComponent
 		return;
 	}
 
-	// if (Layers.Contains(LayerID))
-	// {
-	// 	return;
-	// }
-	//
-	// if (USkeletalMeshComponent* SkeletalMeshComponent = Cast<USkeletalMeshComponent>(MeshComponent))
-	// {
-	// 	UPoseableMeshComponent* PoseableMesh = NewObject<UPoseableMeshComponent>(this);
-	// 	if (!PoseableMesh)
-	// 	{
-	// 		return;
-	// 	}
-	// 	PoseableMesh->RegisterComponent();
-	//
-	// 	PoseableMesh->SetSkeletalMesh(SkeletalMeshComponent->SkeletalMesh);
-	//
-	// 	PoseableMesh->SetWorldScale3D(FVector(1.05f));
-	// 	PoseableMesh->AttachToComponent(MeshComponent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-	//
-	// 	// switch materials
-	// 	if (Material)
-	// 	{
-	// 		const int32 NumMaterials = PoseableMesh->GetNumMaterials();
-	// 		for (int32 i = 0; i < NumMaterials; i++)
-	// 		{
-	// 			PoseableMesh->SetMaterial(i, Material);
-	// 		}
-	// 	}
-	//
-	// 	Layers.Add(LayerID, FFPCMaterialOverlayLayer(SkeletalMeshComponent, PoseableMesh));
-	// }
-	// else
-	// {
-	// 	UE_LOG(LogTemp, Warning, TEXT("TODO: Update mesh outline to work with non-skeletal meshes"));
-	// }
+	if (FFPMaterialOverlayLayerSettings* Settings = LayerSettings.Find(LayerID))
+	{
+		if (Settings->RetriggerTime > 0)
+		{
+			float TimeSinceLastTriggered = GetWorld()->GetTimeSeconds() - Settings->LastTriggered;
+
+			if (TimeSinceLastTriggered > Settings->RetriggerTime)
+			{
+				Settings->LastTriggered = GetWorld()->GetTimeSeconds();
+			}
+			else
+			{
+				return;
+			}
+		}
+	}
+
+	AddLayerFromMeshes(LayerID, {MeshComponent}, Material);
 }
 
 void UFPCMaterialOverlayComponent::AddLayerFromMeshes(FGameplayTag LayerID, TArray<UMeshComponent*> MeshComponents, UMaterialInterface* Material)
@@ -158,7 +157,7 @@ FFPCSkeletalMeshBinding UFPCMaterialOverlayComponent::CreateSkeletalMeshBinding(
 		return FFPCSkeletalMeshBinding();
 	}
 
-	PoseableMesh->SetSkeletalMesh(SkeletalMeshComponent->SkeletalMesh);
+	PoseableMesh->CastShadow = false;
 
 	PoseableMesh->SetWorldScale3D(SkeletalMeshComponent->GetComponentScale() * 1.05f);
 	PoseableMesh->AttachToComponent(MeshComponent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
@@ -168,6 +167,8 @@ FFPCSkeletalMeshBinding UFPCMaterialOverlayComponent::CreateSkeletalMeshBinding(
 
 	PoseableMesh->RegisterComponent();
 
+	PoseableMesh->SetSkinnedAssetAndUpdate(SkeletalMeshComponent->GetSkeletalMeshAsset());
+	PoseableMesh->CopyPoseFromSkeletalComponent(SkeletalMeshComponent);
 
 	// switch materials
 	if (Material)
@@ -200,7 +201,7 @@ UStaticMeshComponent* UFPCMaterialOverlayComponent::CreateStaticMeshBinding(UMes
 
 	NewStaticMesh->SetWorldScale3D(StaticMeshComponent->GetComponentScale() * 1.05f);
 	NewStaticMesh->AttachToComponent(MeshComponent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-
+	
 	NewStaticMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	NewStaticMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
