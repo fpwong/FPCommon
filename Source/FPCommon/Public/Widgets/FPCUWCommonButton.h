@@ -24,7 +24,7 @@ public:
 	virtual bool Initialize() override;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidgetOptional))
-	UCommonTextBlock* ButtonLabel;
+	TObjectPtr<UCommonTextBlock> ButtonLabel;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "FPCommonButton", meta = (ExposeOnSpawn = true))
 	FText InitialButtonText;

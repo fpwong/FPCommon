@@ -14,13 +14,13 @@ class FPCOMMON_API AFPTopDownCameraPawn : public APawn
 
 public:
 	UPROPERTY(BlueprintReadWrite)
-	USceneComponent* DefaultSceneRoot;
+	TObjectPtr<USceneComponent> DefaultSceneRoot;
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
-	USpringArmComponent* SpringArm;
+	TObjectPtr<USpringArmComponent> SpringArm;
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
-	UCameraComponent* Camera;
+	TObjectPtr<UCameraComponent> Camera;
 	
 	FVector DesiredLocation;
 	float DesiredArmLength;

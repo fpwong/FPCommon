@@ -6,6 +6,8 @@
 #include "Blueprint/UserWidget.h"
 #include "FPCUWZoomPanWidget.generated.h"
 
+class UCanvasPanel;
+
 /**
  * Credits to Everynone, see https://forums.unrealengine.com/t/how-to-scale-zoom-a-widget-with-blueprints/430983
  */
@@ -19,7 +21,7 @@ public:
 	bool bIsPanning = false;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-	class UCanvasPanel* InnerCanvas = nullptr;
+	TObjectPtr<UCanvasPanel> InnerCanvas;
 
 	FVector2D ClampSides(const FGeometry& InGeometry, FVector2D ClampTo);
 

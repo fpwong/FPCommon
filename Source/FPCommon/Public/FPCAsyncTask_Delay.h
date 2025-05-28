@@ -40,7 +40,7 @@ protected:
 	FTimerHandle DelayHandle;
 
 	UPROPERTY()
-	UObject* WorldContextObject = nullptr;
+	TObjectPtr<UObject> WorldContextObject = nullptr;
 
 	virtual void DelayEnded();
 };

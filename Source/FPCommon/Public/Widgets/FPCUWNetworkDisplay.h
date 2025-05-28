@@ -18,7 +18,7 @@ class FPCOMMON_API UFPCUWNetworkDisplay : public UUserWidget
 
 public:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-	UCommonTextBlock* NetworkLabel;
+	TObjectPtr<UCommonTextBlock> NetworkLabel;
 
 	virtual void NativeOnInitialized() override;
 };

@@ -20,10 +20,10 @@ public:
 	virtual bool Initialize() override;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-	UPanelWidget* TabPanel;
+	TObjectPtr<UPanelWidget> TabPanel;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "FPCommonTabList", meta = (ExposeOnSpawn = true))
-	UCommonAnimatedSwitcher* WidgetSwitcher;
+	TObjectPtr<UCommonAnimatedSwitcher> WidgetSwitcher;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "FPCommonTabList", meta = (ExposeOnSpawn = true))
 	TSubclassOf<UCommonButtonBase> TabButtonWidgetType;

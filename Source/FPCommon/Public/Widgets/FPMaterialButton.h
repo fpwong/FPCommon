@@ -20,13 +20,13 @@ public:
 	virtual bool Initialize() override;
 
 	UPROPERTY(EditAnywhere)
-	UMaterialInterface* ButtonMaterial;
+	TObjectPtr<UMaterialInterface> ButtonMaterial;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-	UImage* ButtonImage;
+	TObjectPtr<UImage> ButtonImage;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidgetOptional))
-	UCommonTextBlock* ButtonLabel;
+	TObjectPtr<UCommonTextBlock> ButtonLabel;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "FPCommonButton", meta = (ExposeOnSpawn = true, EditCondition = "ButtonLabel != nullptr", EditConditionHides))
 	FText InitialButtonText;
@@ -34,7 +34,7 @@ public:
 	void SetButtonLabelText(const FText& InText);
 
 	UPROPERTY(BlueprintReadOnly)
-	UMaterialInstanceDynamic* DynamicMaterial;
+	TObjectPtr<UMaterialInstanceDynamic> DynamicMaterial;
 
 	virtual void NativeOnHovered() override;
 	virtual void NativeOnUnhovered() override;
