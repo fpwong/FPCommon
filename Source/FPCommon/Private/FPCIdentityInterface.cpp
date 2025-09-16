@@ -4,7 +4,7 @@
 
 FGameplayTag UFPCIdentityHelper::GetIdentityTag(UObject* Object)
 {
-	if (Object->Implements<UFPCIdentityInterface>())
+	if (Object && Object->Implements<UFPCIdentityInterface>())
 	{
 		return IFPCIdentityInterface::Execute_GetIdentityTag(Object);
 	}
