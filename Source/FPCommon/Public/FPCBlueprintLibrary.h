@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "Perception/AISense.h"
 // #include "Engine/"
 #include "FPCBlueprintLibrary.generated.h"
@@ -77,4 +78,16 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Misc", meta=(WorldContext="WorldContextObject"))
 	static APlayerController* GetPrimaryPlayerController(UObject* WorldContextObject);
+
+	UFUNCTION(BlueprintCallable, Category = "Trace", meta=(WorldContext="WorldContextObject"))
+	static TArray<AActor*> FPTraceActorsCapsule(const UObject* WorldContextObject, const FVector Start, const FVector End, const TArray<AActor*>& ActorsToIgnore, ETraceTypeQuery TraceChannel, float Radius = 100.0f, float HalfHeight = 1.0f, EDrawDebugTrace::Type DrawDebugType = EDrawDebugTrace::Type::None);
+
+	UFUNCTION(BlueprintCallable, Category = "Trace", meta=(WorldContext="WorldContextObject"))
+	static TArray<AActor*> FPTraceActorsSphere(const UObject* WorldContextObject, const FVector Location, const TArray<AActor*>& ActorsToIgnore, ETraceTypeQuery TraceChannel, float Radius = 100.0f, EDrawDebugTrace::Type DrawDebugType = EDrawDebugTrace::Type::None);
+
+	UFUNCTION(BlueprintCallable)
+	static TArray<float> DistributeAngle(int Count, float Angle, bool bCenter, float& Step);
+
+	UFUNCTION(BlueprintCallable)
+	static TArray<FVector> DistributePoints(FVector Start, FVector End, int Count, FVector& Step);
 };

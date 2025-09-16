@@ -11,6 +11,7 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/GameModeBase.h"
 #include "GameFramework/GameSession.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "Widgets/CommonActivatableWidgetContainer.h"
 
 FAISenseAffiliationFilter UFPCBlueprintLibrary::MakeAffiliationFilter(const bool bDetectEnemies, const bool bDetectNeutrals, const bool bDetectFriendlies)
@@ -230,4 +231,84 @@ APlayerController* UFPCBlueprintLibrary::GetPrimaryPlayerController(UObject* Wor
 	}
 
 	return nullptr;
+}
+
+TArray<float> UFPCBlueprintLibrary::DistributeAngle(int Count, float Angle, bool bCenter, float& Step)
+{
+	TArray<float> Result;
+	if (Count <= 0)
+	{
+		return Result;
+	}
+
+	Result.Reserve(Count);
+
+	float Start = 0;
+
+	if (bCenter)
+	{
+		Start -= Angle / 2;
+	}
+
+	if (Count == 1)
+	{
+		Result.Add(0);
+		return Result;
+	}
+
+	Step = Angle / (Count - 1);
+	for (int i = 0; i < Count; ++i)
+	{
+		Result.Add(Start + i * Step);
+	}
+
+	return Result;
+}
+
+TArray<FVector> UFPCBlueprintLibrary::DistributePoints(FVector Start, FVector End, int Count, FVector& Step)
+{
+	TArray<FVector> Result;
+	if (Count <= 0)
+	{
+		return Result;
+	}
+
+	Result.Reserve(Count);
+	if (Count == 1)
+	{
+		Result.Add(Start);
+		return Result;
+	}
+
+	const FVector Delta = End - Start;
+	Step = Delta / (Count - 1);
+	for (int i = 0; i < Count; ++i)
+	{
+		Result.Add(Start + i * Step);
+	}
+
+	return Result;
+}
+
+TArray<AActor*> UFPCBlueprintLibrary::FPTraceActorsCapsule(const UObject* WorldContextObject, const FVector Start, const FVector End, const TArray<AActor*>& ActorsToIgnore, ETraceTypeQuery TraceChannel, float Radius, float HalfHeight, EDrawDebugTrace::Type DrawDebugType)
+{
+	TArray<FHitResult> OutHits;
+	UKismetSystemLibrary::CapsuleTraceMulti(WorldContextObject, Start, End, Radius, HalfHeight, TraceChannel, false, ActorsToIgnore, DrawDebugType, OutHits, false);
+
+	TArray<AActor*> OutActors;
+
+	for (const FHitResult& OutHit : OutHits)
+	{
+		if (AActor* Actor = OutHit.GetActor())
+		{
+			OutActors.Add(Actor);
+		}
+	}
+
+	return OutActors;
+}
+
+TArray<AActor*> UFPCBlueprintLibrary::FPTraceActorsSphere(const UObject* WorldContextObject, const FVector Location, const TArray<AActor*>& ActorsToIgnore, ETraceTypeQuery TraceChannel, float Radius, EDrawDebugTrace::Type DrawDebugType)
+{
+	return FPTraceActorsCapsule(WorldContextObject, Location, Location, ActorsToIgnore, TraceChannel, Radius, 1.0f, DrawDebugType);
 }
