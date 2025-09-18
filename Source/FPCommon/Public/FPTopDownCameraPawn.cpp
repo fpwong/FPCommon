@@ -3,19 +3,17 @@
 #include "FPTopDownCameraPawn.h"
 
 
-
 #include "DrawDebugHelpers.h"
 // #include "FPTopDownPlayerController.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "Kismet/GameplayStatics.h"
 
 AFPTopDownCameraPawn::AFPTopDownCameraPawn(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	DefaultSceneRoot = CreateDefaultSubobject<USceneComponent>("DefaultSceneRoot");
 	SetRootComponent(DefaultSceneRoot);
-	
+
 	SpringArm = ObjectInitializer.CreateDefaultSubobject<USpringArmComponent>(this, TEXT("SpringArm"));
 	SpringArm->SetupAttachment(RootComponent);
 	// SpringArm->AttachToComponent(DefaultSceneRoot, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
@@ -34,7 +32,7 @@ AFPTopDownCameraPawn::AFPTopDownCameraPawn(const FObjectInitializer& ObjectIniti
 	SetRemoteRoleForBackwardsCompat(ROLE_SimulatedProxy);
 	SetReplicates(true);
 	AActor::SetReplicateMovement(true);
-	NetUpdateFrequency = 60.0f;
+	SetNetUpdateFrequency(60.0f);
 	NetPriority = 2.0f;
 
 	ZoomInterpSpeed = 8.0f;
@@ -51,8 +49,12 @@ void AFPTopDownCameraPawn::UpdateArmLength(const float ZoomAxis)
 {
 	if (bCanZoom)
 	{
-		const float NewArmLength = DesiredArmLength * ((ZoomAxis * 0.05) + 1.0f);
+		float ZoomAmount = FMath::Pow(1.05f, -1 * ZoomAxis);
+		const float NewArmLength = DesiredArmLength * ZoomAmount;
 		DesiredArmLength = FMath::Clamp(NewArmLength, MinArmLength, MaxArmLength);
+
+		const float NewWidth = DesiredOrthoWidth * ZoomAmount;
+		DesiredOrthoWidth = FMath::Clamp(NewWidth, MinOrthoWidth, MaxOrthoWidth);
 	}
 }
 
@@ -61,25 +63,25 @@ void AFPTopDownCameraPawn::MoveCamera(float DeltaTime, float ScreenX, float Scre
 	const FVector CameraForward = Camera->GetForwardVector();
 	FVector AdjustedForward(CameraForward.X, CameraForward.Y, 0.0f);
 	AdjustedForward.Normalize();
-	
+
 	const FVector CameraRight = Camera->GetRightVector();
-	
+
 	FVector2D NormalizedMovement = FVector2D(ScreenX, ScreenY).GetSafeNormal();
-	
+
 	const FVector MoveRight = CameraRight * NormalizedMovement.X;
 	const FVector MoveForward = AdjustedForward * NormalizedMovement.Y;
-	
+
 	const float DistanceScale = SpringArm->TargetArmLength / 3000.0f;
 	float Speed = DeltaTime * DistanceScale * CameraSpeed;
-	
+
 	FVector DeltaX = MoveRight;
 	FVector DeltaY = MoveForward;
 
 	FVector Delta = DeltaX + DeltaY;
 	Delta.Normalize();
 	Delta *= Speed;
-	
-	DesiredLocation += Delta;// (DeltaX + DeltaY);
+
+	DesiredLocation += Delta; // (DeltaX + DeltaY);
 
 	// AActor* Focus = nullptr;
  //    int32 ViewportX;
@@ -127,12 +129,13 @@ void AFPTopDownCameraPawn::OnConstruction(const FTransform& Transform)
 {
 	DesiredLocation = Transform.GetLocation();
 	DesiredArmLength = SpringArm->TargetArmLength;
+	DesiredOrthoWidth = Camera->OrthoWidth;
 }
 
 void AFPTopDownCameraPawn::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-	
+
 	// AActor* Focus = nullptr;
 	// int32 ViewportX;
 	// int32 ViewportY;
@@ -186,7 +189,10 @@ void AFPTopDownCameraPawn::Tick(float DeltaSeconds)
 
 	FVector NewLocation = FMath::VInterpTo(GetActorLocation(), DesiredLocation, DeltaSeconds, MovementInterpSpeed);
 	SetActorLocation(NewLocation);
-	
+
 	const float NewArmLength = FMath::FInterpTo(SpringArm->TargetArmLength, DesiredArmLength, DeltaSeconds, ZoomInterpSpeed);
 	SpringArm->TargetArmLength = NewArmLength;
+
+	const float NewWidth = FMath::FInterpTo(Camera->OrthoWidth, DesiredOrthoWidth, DeltaSeconds, ZoomInterpSpeed);
+	Camera->OrthoWidth = NewWidth;
 }
