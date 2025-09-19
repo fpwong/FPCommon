@@ -35,7 +35,7 @@ public:
 	static FBox GetBoxIntersection(FBox A, FBox B);
 
 	UFUNCTION(BlueprintCallable, Category = "Misc", meta=(WorldContext="WorldContextObject", ExpandBoolAsExecs ="ReturnValue"))
-	static bool ProjectLocationOnGround(UObject* WorldContextObject, FVector Location, FVector& GroundLocation, double TraceDistance = 2000);
+	static bool ProjectLocationOnGround(UObject* WorldContextObject, FVector Location, FVector& GroundLocation, ETraceTypeQuery TraceChannel, double TraceDistance = 2000);
 
 	UFUNCTION(BlueprintCallable, Category = "Misc")
     static AActor* GetClosestActor(const FVector& Location, const TArray<AActor*>& Actors);
@@ -78,12 +78,6 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Misc", meta=(WorldContext="WorldContextObject"))
 	static APlayerController* GetPrimaryPlayerController(UObject* WorldContextObject);
-
-	UFUNCTION(BlueprintCallable, Category = "Trace", meta=(WorldContext="WorldContextObject"))
-	static TArray<AActor*> FPTraceActorsCapsule(const UObject* WorldContextObject, const FVector Start, const FVector End, const TArray<AActor*>& ActorsToIgnore, ETraceTypeQuery TraceChannel, float Radius = 100.0f, float HalfHeight = 1.0f, EDrawDebugTrace::Type DrawDebugType = EDrawDebugTrace::Type::None);
-
-	UFUNCTION(BlueprintCallable, Category = "Trace", meta=(WorldContext="WorldContextObject"))
-	static TArray<AActor*> FPTraceActorsSphere(const UObject* WorldContextObject, const FVector Location, const TArray<AActor*>& ActorsToIgnore, ETraceTypeQuery TraceChannel, float Radius = 100.0f, EDrawDebugTrace::Type DrawDebugType = EDrawDebugTrace::Type::None);
 
 	UFUNCTION(BlueprintCallable)
 	static TArray<float> DistributeAngle(int Count, float Angle, bool bCenter, float& Step);

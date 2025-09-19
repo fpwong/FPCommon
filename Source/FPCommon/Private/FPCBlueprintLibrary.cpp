@@ -93,11 +93,11 @@ FBox UFPCBlueprintLibrary::GetBoxIntersection(FBox A, FBox B)
 	return FBox(Min, Max);
 }
 
-bool UFPCBlueprintLibrary::ProjectLocationOnGround(UObject* WorldContextObject, FVector Location, FVector& GroundLocation, double TraceDistance)
+bool UFPCBlueprintLibrary::ProjectLocationOnGround(UObject* WorldContextObject, FVector Location, FVector& GroundLocation, ETraceTypeQuery TraceChannel, double TraceDistance)
 {
 	const FVector LineStart = Location + FVector(0, 0, TraceDistance);
 	const FVector LineEnd = Location - FVector(0, 0, TraceDistance);
-	FCollisionObjectQueryParams ObjectParams(FCollisionObjectQueryParams::InitType::AllStaticObjects);
+	FCollisionObjectQueryParams ObjectParams(TraceChannel);
 
 	FHitResult OutHit;
 	if (WorldContextObject->GetWorld()->LineTraceSingleByObjectType(OutHit, LineStart, LineEnd, ObjectParams))
@@ -288,27 +288,4 @@ TArray<FVector> UFPCBlueprintLibrary::DistributePoints(FVector Start, FVector En
 	}
 
 	return Result;
-}
-
-TArray<AActor*> UFPCBlueprintLibrary::FPTraceActorsCapsule(const UObject* WorldContextObject, const FVector Start, const FVector End, const TArray<AActor*>& ActorsToIgnore, ETraceTypeQuery TraceChannel, float Radius, float HalfHeight, EDrawDebugTrace::Type DrawDebugType)
-{
-	TArray<FHitResult> OutHits;
-	UKismetSystemLibrary::CapsuleTraceMulti(WorldContextObject, Start, End, Radius, HalfHeight, TraceChannel, false, ActorsToIgnore, DrawDebugType, OutHits, false);
-
-	TArray<AActor*> OutActors;
-
-	for (const FHitResult& OutHit : OutHits)
-	{
-		if (AActor* Actor = OutHit.GetActor())
-		{
-			OutActors.Add(Actor);
-		}
-	}
-
-	return OutActors;
-}
-
-TArray<AActor*> UFPCBlueprintLibrary::FPTraceActorsSphere(const UObject* WorldContextObject, const FVector Location, const TArray<AActor*>& ActorsToIgnore, ETraceTypeQuery TraceChannel, float Radius, EDrawDebugTrace::Type DrawDebugType)
-{
-	return FPTraceActorsCapsule(WorldContextObject, Location, Location, ActorsToIgnore, TraceChannel, Radius, 1.0f, DrawDebugType);
 }
