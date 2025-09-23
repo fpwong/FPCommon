@@ -8,6 +8,11 @@ void UFPCSimpleAnimInstance::NativeInitializeAnimation()
 	Super::NativeInitializeAnimation();
 
 	OwningPawn = TryGetPawnOwner();
+
+	if (IFPCAnimInstanceInterface* AnimInstInterface = Cast<IFPCAnimInstanceInterface>(OwningPawn))
+	{
+		PawnBlendSpace = AnimInstInterface->GetAnimInstBlendSpace();
+	}
 }
 
 void UFPCSimpleAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
